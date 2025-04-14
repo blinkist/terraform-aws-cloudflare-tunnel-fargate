@@ -22,7 +22,7 @@ The steps you need to take:
 
 These are one time steps and only need to be executed one time in a Zero Trust account:
 
-6. Go to Zero Trust settings > WARP client > Device enrollment permissions and add a rule, for instance you can auth to Warp if your email ends at elasticscale.cloud
+6. Go to Zero Trust settings > WARP client > Device enrollment permissions and add a rule, for instance you can auth to Warp if your email ends at elasticscale.com
 7. Go to Zero Trust settings > WARP Client > Edit the default profile, go the Split Tunnels section and click Manage, remove the CIDR block 10.0.0.0/8 (or if your VPC has another CIDR block that overlaps with one here, remove that one)
 8. [Install the WARP client](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/download-warp/), then go to preferences, Account and click Login to Cloudflare Zero trust
 
@@ -30,23 +30,15 @@ After you connect to the WARP agent and whitelist the security group of this mod
 
 You can also use this module to give Zero Trust access to internal load balancers or other services. You need to then set the ingress rules and add a CNAME to the Cloudflare domain.
 
-[For more debugging steps check out the elasticscale blog.](https://elasticscale.cloud/en/get-a-free-vpn-into-your-aws-vpc-and-worldwide-performance-improvement-through-cloudflare-tunnels/)
+[For more debugging steps check out the elasticscale blog.](https://elasticscale.com/blog/get-a-cheap-vpn-into-your-aws-vpc-and-worldwide-performance-improvement-through-cloudflare-tunnels/)
 
 ## About ElasticScale
 
-ElasticScale is a Solutions Architecture as a Service focusing on start-ups and scale-ups. For a fixed monthly subscription fee, we handle all your AWS workloads. Some services include:
+Discover ES Foundation, the smart digital infrastructure for SaaS companies that want to grow and thrive.
 
-* Migrating **existing workloads** to AWS
-* Implementing the **Zero Trust security model**
-* Integrating **DevOps principles** within your organization
-* Moving to **infrastructure automation** (Terraform)
-* Complying with **ISO27001 regulations within AWS**
+Check out our <a href="https://elasticscale.com" target="_blank" style="color: #FFB600; text-decoration: underline">website</a> for more information.
 
-You can **pause** the subscription at any time and have **direct access** to certified AWS professionals.
-
-Check out our <a href="https://elasticscale.cloud" target="_blank" style="color: #14dcc0; text-decoration: underline">website</a> for more information.
-
-<img src="https://static.elasticscale.io/logo/square/elasticscale_logo_transparent.png" alt="ElasticScale logo" width="150"/>
+<img src="https://static.elasticscale.io/email/banner.png" alt="ElasticScale banner" width="100%"/>
 
 ## Requirements
 
