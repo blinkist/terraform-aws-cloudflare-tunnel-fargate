@@ -10,7 +10,7 @@ resource "random_string" "suffix" {
 
 resource "cloudflare_tunnel" "tunnel" {
   account_id = var.cloudflare_account_id
-  name       = "${var.prefix}-tunnel-${random_string.suffix.result}"
+  name       = "${var.prefix}-tunnel"
   secret     = base64encode(random_password.tunnel_secret.result)
 }
 
