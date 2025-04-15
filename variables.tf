@@ -13,6 +13,12 @@ variable "private_subnets" {
   description = "List of private subnets to launch the Cloudflare instances in (must be same VPC under VPC ID)"
 }
 
+variable "create_tunnel_config" {
+  type = bool
+  description = "Create tunnel config in module or not"
+  default = false
+}
+
 variable "ingress_rules" {
   type = list(object({
     hostname = optional(string)

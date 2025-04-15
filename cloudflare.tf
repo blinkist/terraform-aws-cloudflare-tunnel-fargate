@@ -22,6 +22,7 @@ resource "cloudflare_tunnel_route" "route" {
 }
 
 resource "cloudflare_tunnel_config" "config" {
+  count = var.create_tunnel_config ? 1 : 0
   account_id = var.cloudflare_account_id
   tunnel_id  = cloudflare_tunnel.tunnel.id
   config {
