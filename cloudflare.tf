@@ -10,7 +10,7 @@ resource "random_string" "suffix" {
 
 resource "cloudflare_tunnel" "tunnel" {
   account_id = var.cloudflare_account_id
-  name       = "${var.prefix}-tunnel-${random_string.suffix.result}"
+  name       = local.tunnel_name
   secret     = base64encode(random_password.tunnel_secret.result)
 }
 
@@ -22,6 +22,7 @@ resource "cloudflare_tunnel_route" "route" {
 }
 
 resource "cloudflare_tunnel_config" "config" {
+  count = var.create_tunnel_config ? 1 : 0
   account_id = var.cloudflare_account_id
   tunnel_id  = cloudflare_tunnel.tunnel.id
   config {

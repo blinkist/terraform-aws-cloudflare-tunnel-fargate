@@ -8,6 +8,11 @@ output "tunnel_id" {
   value       = cloudflare_tunnel.tunnel.id
 }
 
+output "tunnel_name" {
+  description = "The name of the Cloudflare Tunnel"
+  value       = local.tunnel_name
+}
+
 output "tunnel_cname" {
   description = "The CNAME of the Cloudflare Tunnel (you can add this as a CNAME in the DNS settings to route traffic to the tunnel, which will be processed by the rules)"
   value       = cloudflare_tunnel.tunnel.cname
