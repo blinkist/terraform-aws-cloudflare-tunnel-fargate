@@ -16,7 +16,7 @@ variable "private_subnets" {
 variable "create_tunnel_config" {
   type = bool
   description = "Create tunnel config in module or not"
-  default = false
+  default = true
 }
 
 variable "ingress_rules" {
@@ -26,7 +26,7 @@ variable "ingress_rules" {
     service  = string
   }))
   default = [{
-    service = "http_status:404"
+    service = "http_status:503"
   }]
   description = "List of ingress rules to allow traffic to (see cloudflare_tunnel_config docs, access_block not supported right now)"
 }
