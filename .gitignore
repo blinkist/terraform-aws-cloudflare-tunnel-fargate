@@ -1,6 +1,12 @@
 # Local .terraform directories
 **/.terraform/*
 
+# Claude Code local config (keep shared settings only)
+.claude/*
+
+!.claude/settings.json
+!.claude/skills
+
 # .tfstate files
 *.tfstate
 *.tfstate.*
@@ -32,4 +38,4 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
-examples/vpc/.terraform.lock.hcl
+.terraform.lock.hcl

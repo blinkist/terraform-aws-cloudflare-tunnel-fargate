@@ -28,7 +28,7 @@ resource "aws_ecs_task_definition" "main" {
       name      = "cloudflared"
       essential = true
       image     = "cloudflare/cloudflared:${var.cloudflare_version}",
-      command   = ["tunnel", "run", cloudflare_tunnel.tunnel.id]
+      command   = ["tunnel", "run", cloudflare_zero_trust_tunnel_cloudflared.tunnel.id]
       secrets = [
         {
           name      = "TUNNEL_TOKEN",
@@ -39,7 +39,7 @@ resource "aws_ecs_task_definition" "main" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.logs.name
-          awslogs-region        = data.aws_region.current.name
+          awslogs-region        = data.aws_region.current.region
           awslogs-stream-prefix = "cloudflared"
         }
       }

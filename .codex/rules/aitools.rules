@@ -1,0 +1,5 @@
+prefix_rule(
+    pattern = ["task"],
+    decision = "allow",
+    justification = "Taskfile commands are the project-approved interface for local module formatting, validation, linting, testing, docs, and checks.",
+)

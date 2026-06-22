@@ -6,9 +6,15 @@ provider "aws" {
 // Could not retrieve the list of available versions for provider hashicorp/cloudflare: 
 // provider registry registry.terraform.io does not have a provider named registry.terraform.io/hashicorp/cloudflare
 terraform {
+  required_version = ">= 1.3"
   required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.0"
+    }
     cloudflare = {
-      source = "registry.terraform.io/cloudflare/cloudflare"
+      source  = "registry.terraform.io/cloudflare/cloudflare"
+      version = "~> 5.0"
     }
   }
 }
@@ -56,5 +62,5 @@ module "vpc" {
   single_nat_gateway  = false
   enable_vpn_gateway  = false
   reuse_nat_ips       = true
-  external_nat_ip_ids = aws_eip.nat.*.id
+  external_nat_ip_ids = aws_eip.nat[*].id
 }
