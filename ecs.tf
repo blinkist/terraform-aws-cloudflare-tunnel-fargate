@@ -67,10 +67,12 @@ resource "aws_security_group" "tunnel" {
 }
 
 resource "aws_ecs_service" "main" {
-  name            = "${var.prefix}-tunnel"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.main.arn
-  desired_count   = var.desired_count
+  name                          = "${var.prefix}-tunnel"
+  cluster                       = aws_ecs_cluster.main.id
+  task_definition               = aws_ecs_task_definition.main.arn
+  desired_count                 = var.desired_count
+  availability_zone_rebalancing = "ENABLED"
+  force_new_deployment          = true
   capacity_provider_strategy {
     capacity_provider = var.fargate_type
     weight            = 100
