@@ -23,6 +23,10 @@ resource "aws_ecs_task_definition" "main" {
   network_mode             = "awsvpc"
   cpu                      = var.cpu
   memory                   = var.memory
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
   container_definitions = jsonencode([
     {
       name      = "cloudflared"
