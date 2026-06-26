@@ -14,9 +14,9 @@ variable "private_subnets" {
 }
 
 variable "create_tunnel_config" {
-  type = bool
+  type        = bool
   description = "Create tunnel config in module or not"
-  default = true
+  default     = true
 }
 
 variable "ingress_rules" {
@@ -45,12 +45,12 @@ variable "desired_count" {
 
 variable "fargate_type" {
   type        = string
-  description = "Use spot instances or regular instances (FARGATE_SPOT or FARGATE), SPOT is much cheaper and does not really affect availability in this case"
+  description = "Capacity provider to use: FARGATE or FARGATE_SPOT. Defaults to FARGATE for reliable capacity (FARGATE_SPOT is cheaper but tasks can be reclaimed and we have hit spot capacity shortages)."
   validation {
     condition     = length(regexall("^(FARGATE_SPOT|FARGATE)$", var.fargate_type)) > 0
     error_message = "ERROR: Valid types are \"FARGATE_SPOT\" and \"FARGATE\"!"
   }
-  default = "FARGATE_SPOT"
+  default = "FARGATE"
 }
 
 variable "cloudflare_version" {

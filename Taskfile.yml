@@ -1,0 +1,38 @@
+version: "3"
+
+tasks:
+  fmt:
+    desc: Format Terraform files
+    cmds:
+      - terraform fmt -recursive
+
+  lint:
+    desc: Run TFLint
+    cmds:
+      - tflint --init
+      - tflint --recursive
+
+  test:
+    desc: Run Terraform native tests
+    cmds:
+      - terraform test
+
+  validate:
+    desc: Initialize and validate Terraform
+    cmds:
+      - terraform init -backend=false
+      - terraform validate
+
+  docs:
+    desc: Update README Terraform docs
+    cmds:
+      - terraform-docs markdown table --output-file README.md --output-mode inject .
+
+  check:
+    desc: Run formatting, validation, linting, tests, and docs generation
+    cmds:
+      - task: fmt
+      - task: validate
+      - task: lint
+      - task: test
+      - task: docs

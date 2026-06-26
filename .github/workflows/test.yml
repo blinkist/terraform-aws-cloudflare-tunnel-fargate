@@ -1,0 +1,77 @@
+name: Test
+
+on:
+  push:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TERRAFORM_DOCS_VERSION: 0.24.0
+  TERRAFORM_DOCS_SHA256: 9005daf969de0b50134493a2c00078b49f5f5b39d021cda7c89bf4d4f3d776d3
+  TFLINT_VERSION: v0.63.1
+  TFLINT_SHA256: 8441a7d97df20431f19c9b9d27ff4c63e308c964e86660bc7cc0cf7bbe0725e8
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read Terraform version
+        id: tfver
+        run: echo "version=$(cat .terraform-version)" >> "$GITHUB_OUTPUT"
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ steps.tfver.outputs.version }}
+
+      - name: Cache tflint binary
+        uses: actions/cache@v5
+        with:
+          path: /usr/local/bin/tflint
+          key: tflint-${{ env.TFLINT_VERSION }}-${{ env.TFLINT_SHA256 }}
+
+      - name: Install tflint
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if [[ ! -x /usr/local/bin/tflint || $(tflint --version | head -n1) != "TFLint version ${TFLINT_VERSION#v}" ]]; then
+            gh release download "${TFLINT_VERSION}" \
+              --repo terraform-linters/tflint \
+              --pattern 'tflint_linux_amd64.zip' \
+              --output tflint.zip
+            printf '%s  %s\n' "${TFLINT_SHA256}" tflint.zip | sha256sum --check --status
+            unzip -o tflint.zip -d /usr/local/bin/
+            rm tflint.zip
+          fi
+
+      - name: Cache tflint plugins
+        uses: actions/cache@v5
+        with:
+          path: ~/.tflint.d
+          key: tflint-plugins-${{ hashFiles('.tflint.hcl') }}
+
+      - name: Install terraform-docs
+        run: |
+          set -euo pipefail
+
+          asset="terraform-docs-v${TERRAFORM_DOCS_VERSION}-linux-amd64.tar.gz"
+          base_url="https://github.com/terraform-docs/terraform-docs/releases/download/v${TERRAFORM_DOCS_VERSION}"
+
+          curl -sSLo terraform-docs.tar.gz "${base_url}/${asset}"
+          printf '%s  %s\n' "${TERRAFORM_DOCS_SHA256}" terraform-docs.tar.gz | sha256sum --check --status
+
+          tar -xzf terraform-docs.tar.gz terraform-docs
+          sudo mv terraform-docs /usr/local/bin/terraform-docs
+
+      - run: terraform fmt -check -recursive
+      - run: terraform init -backend=false
+      - run: terraform validate
+      - run: tflint --init
+      - run: tflint --recursive
+      - run: terraform test
+      - run: terraform-docs markdown table --output-file README.md --output-mode inject --output-check .

@@ -8,7 +8,7 @@ resource "aws_ecs_cluster" "main" {
 
 resource "aws_ecs_cluster_capacity_providers" "main" {
   cluster_name       = aws_ecs_cluster.main.name
-  capacity_providers = [var.fargate_type]
+  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
   default_capacity_provider_strategy {
     base              = 1
     weight            = 100
@@ -23,12 +23,16 @@ resource "aws_ecs_task_definition" "main" {
   network_mode             = "awsvpc"
   cpu                      = var.cpu
   memory                   = var.memory
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
   container_definitions = jsonencode([
     {
       name      = "cloudflared"
       essential = true
       image     = "cloudflare/cloudflared:${var.cloudflare_version}",
-      command   = ["tunnel", "run", cloudflare_tunnel.tunnel.id]
+      command   = ["tunnel", "run", cloudflare_zero_trust_tunnel_cloudflared.tunnel.id]
       secrets = [
         {
           name      = "TUNNEL_TOKEN",
@@ -39,7 +43,7 @@ resource "aws_ecs_task_definition" "main" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.logs.name
-          awslogs-region        = data.aws_region.current.name
+          awslogs-region        = data.aws_region.current.region
           awslogs-stream-prefix = "cloudflared"
         }
       }
@@ -67,10 +71,12 @@ resource "aws_security_group" "tunnel" {
 }
 
 resource "aws_ecs_service" "main" {
-  name            = "${var.prefix}-tunnel"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.main.arn
-  desired_count   = var.desired_count
+  name                          = "${var.prefix}-tunnel"
+  cluster                       = aws_ecs_cluster.main.id
+  task_definition               = aws_ecs_task_definition.main.arn
+  desired_count                 = var.desired_count
+  availability_zone_rebalancing = "ENABLED"
+  force_new_deployment          = true
   capacity_provider_strategy {
     capacity_provider = var.fargate_type
     weight            = 100
@@ -82,4 +88,7 @@ resource "aws_ecs_service" "main" {
       aws_security_group.tunnel.id
     ]
   }
+  depends_on = [
+    aws_ecs_cluster_capacity_providers.main
+  ]
 }

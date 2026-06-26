@@ -5,7 +5,7 @@ output "security_group_id" {
 
 output "tunnel_id" {
   description = "The ID of the Cloudflare Tunnel"
-  value       = cloudflare_tunnel.tunnel.id
+  value       = cloudflare_zero_trust_tunnel_cloudflared.tunnel.id
 }
 
 output "tunnel_name" {
@@ -15,5 +15,5 @@ output "tunnel_name" {
 
 output "tunnel_cname" {
   description = "The CNAME of the Cloudflare Tunnel (you can add this as a CNAME in the DNS settings to route traffic to the tunnel, which will be processed by the rules)"
-  value       = cloudflare_tunnel.tunnel.cname
+  value       = "${cloudflare_zero_trust_tunnel_cloudflared.tunnel.id}.cfargotunnel.com"
 }
